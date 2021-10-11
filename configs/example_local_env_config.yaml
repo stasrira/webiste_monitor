@@ -1,0 +1,23 @@
+Monitor:
+    locations:
+#        -
+#            url: http://slapp07.mssm.edu:81/api/metadata/stats
+#            notify_default_recepients: True
+#            additional_recepients: ['stasrira@yahoo.com']
+#        -
+#            url: http://slapp06.mssm.edu:81/api/metadata/stats
+#            notify_default_recepients: False
+#            additional_recepients: [ 'stasrira@yahoo.com' ]
+        -
+            url: ://slapp06.mssm.edu:81/ERROR
+            notify_default_recepients: False
+            additional_recepients: [ 'stasrira@yahoo.com' ]
+        -
+            url: http://slapp06.mssm.edu:8282
+            notify_default_recepients: False
+            additional_recepients: [ 'stasrira@yahoo.com' ]
+
+
+#    Common:
+#        number_attempts: 1
+

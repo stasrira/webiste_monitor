@@ -1,0 +1,17 @@
+Version: 1.00
+
+Logging:
+    #main log - log created by the main application
+    #defines log levels to be used for "main" and "file" logs. Usual values are INFO and DEBUG
+    main_log_level: INFO
+
+Location:
+    app_logs: logs
+
+Email:
+    #default settings for sending emails
+    default_from_email: stas.rirak@mssm.edu
+    send_to_emails: ['stasrirak.ms@gmail.com', 'stas.rirak@mssm.edu']
+    send_emails: True # expected values: True, False
+
+
