@@ -1,5 +1,5 @@
 yagmail==0.14.247
-PyYAML>=5.4
+PyYAML==5.4.1
 python-dotenv~=0.17.1
 
 requests~=2.26.0
