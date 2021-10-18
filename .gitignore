@@ -117,3 +117,4 @@ configs/local_env_config.yaml
 encrypt_test.py
 
 logs/
+run_monitor_website.sh
