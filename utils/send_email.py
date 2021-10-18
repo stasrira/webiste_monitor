@@ -3,6 +3,7 @@ from utils import ConfigData
 from utils import global_const as gc
 import yagmail
 import os
+import traceback
 
 
 def send_yagmail(emails_to, subject, message, email_from=None, attachment_path=None, smtp_server=None,
@@ -38,6 +39,37 @@ def send_yagmail(emails_to, subject, message, email_from=None, attachment_path=N
         attachments=filename,
     )
 
+
+def prepare_and_send_email(email_body, email_subject, mcfg, lcfg, mlog = None):
+
+    if mcfg:
+        send_to = []
+        # collect all email_to addresses that should be used
+        # check if default addresses have to be included
+        if 'notify_default_recepients' in lcfg and lcfg['notify_default_recepients'] \
+                and isinstance(mcfg.get_value('Email/send_to_emails'), list):
+            send_to.extend(mcfg.get_value('Email/send_to_emails'))  # get all default addresses.
+        # check if additional addresses have to be included
+        if 'additional_recepients' in lcfg and lcfg['additional_recepients'] \
+                and isinstance(lcfg['additional_recepients'], list):
+            send_to.extend(lcfg['additional_recepients'])
+        # send notification email
+        if send_to:
+            try:
+                send_yagmail(
+                    emails_to=send_to,
+                    subject=email_subject,
+                    message=email_body
+                    # ,attachment_path = email_attchms_study
+                )
+            except Exception as ex:
+                # report unexpected error during sending emails to a log file and continue
+                _str = 'Unexpected Error "{}" occurred during an attempt to send an email.\n{}'. \
+                    format(ex, traceback.format_exc())
+                if mlog:
+                    mlog.critical(_str)
+        else:
+            mlog.critical('No send to addresses were found for sending alert email for {} website'.format(lcfg['url']))
 
 # if executed by itself, do the following
 if __name__ == '__main__':

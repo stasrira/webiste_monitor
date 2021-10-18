@@ -1,53 +1,17 @@
 import os
 from os import path
-import time
 import sys
 import traceback
 from pathlib import Path
 from dotenv import load_dotenv
-from utils import setup_logger_common, deactivate_logger_common, common as cm
+from utils import setup_logger_common, deactivate_logger_common, prepare_and_send_email
 from utils import ConfigData
 from utils import global_const as gc
-from utils import send_email as email
 from utils import web_utils
 
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
-
-
-def send_email(email_body, email_subject, mcfg, lcfg, mlog = None):
-    from utils import send_email as email
-    # import traceback
-
-    if mcfg:
-        send_to = []
-        # collect all email_to addresses that should be used
-        # check if default addresses have to be included
-        if 'notify_default_recepients' in lcfg and lcfg['notify_default_recepients'] \
-                and isinstance(mcfg.get_value('Email/send_to_emails'), list):
-            send_to.extend(mcfg.get_value('Email/send_to_emails'))  # get all default addresses.
-        # check if additional addresses have to be included
-        if 'additional_recepients' in lcfg and lcfg['additional_recepients'] \
-                and isinstance(lcfg['additional_recepients'], list):
-            send_to.extend(lcfg['additional_recepients'])
-        # send notification email
-        if send_to:
-            try:
-                email.send_yagmail(
-                    emails_to=send_to,
-                    subject=email_subject,
-                    message=email_body
-                    # ,attachment_path = email_attchms_study
-                )
-            except Exception as ex:
-                # report unexpected error during sending emails to a log file and continue
-                _str = 'Unexpected Error "{}" occurred during an attempt to send an email.\n{}'. \
-                    format(ex, traceback.format_exc())
-                if mlog:
-                    mlog.critical(_str)
-        else:
-            mlog.critical('No send to addresses were found for sending alert email for {} website'.format(lcfg['url']))
 
 # if executed by itself, do the following
 if __name__ == '__main__':
@@ -74,7 +38,6 @@ if __name__ == '__main__':
         logdir = Path(prj_wrkdir) / log_folder_name
     else:
         logdir = Path(log_folder_name)
-    # logdir = Path(prj_wrkdir) / log_folder_name  # 'logs'
     # lg_filename = time.strftime("%Y%m%d_%H%M%S", time.localtime()) + '.log'
     lg_filename = 'website_monitor.log'
 
@@ -134,7 +97,7 @@ if __name__ == '__main__':
                 url_len_show = m_cfg.get_value('Email/url_len_show_in_subject')
                 email_subject = 'Website Monitoring Tool - Alert for {}'\
                     .format (wloc['url'][:url_len_show] + ('...' if len(wloc['url']) > url_len_show else ''))
-                send_email (email_body, email_subject, m_cfg, wloc, mlog)
+                prepare_and_send_email (email_body, email_subject, m_cfg, wloc, mlog)
 
     except Exception as ex:
         # report unexpected error to log file
