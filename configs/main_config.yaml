@@ -4,6 +4,11 @@ Logging:
     #main log - log created by the main application
     #defines log levels to be used for "main" and "file" logs. Usual values are INFO and DEBUG
     main_log_level: INFO
+    # this section defines how often a new log file will be created and how many backup files are stored
+    time_rotating:
+        when: 'D' # expected values: S-Seconds,M-Minutes,H-Hours,D-Days,W0-W6-Weekday (0=Monday),midnight-Rolls over at midnight
+        interval: 1 # defines how often a rotation will be applied
+        backupCount: 30 # defines how many backup files are stored (any extra files are being deleted)
 
 Location:
     app_logs: logs

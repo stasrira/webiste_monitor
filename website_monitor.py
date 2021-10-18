@@ -68,16 +68,30 @@ if __name__ == '__main__':
     log_folder_name = gc.APP_LOG_DIR  # gc.LOG_FOLDER_NAME
     prj_wrkdir = os.path.dirname(os.path.abspath(__file__))
 
-    # get current location of the script and create Log folder
+    # get current location of the script and create a Log folder
     # if a relative path provided, convert it to the absolute address based on the application working dir
     if not os.path.isabs(log_folder_name):
         logdir = Path(prj_wrkdir) / log_folder_name
     else:
         logdir = Path(log_folder_name)
     # logdir = Path(prj_wrkdir) / log_folder_name  # 'logs'
-    lg_filename = time.strftime("%Y%m%d_%H%M%S", time.localtime()) + '.log'
+    # lg_filename = time.strftime("%Y%m%d_%H%M%S", time.localtime()) + '.log'
+    lg_filename = 'website_monitor.log'
 
-    lg = setup_logger_common(common_logger_name, logging_level, logdir, lg_filename)  # logging_level
+    # define structure of the time_rotating_details dictionary
+    time_rotating_details = {}
+    # check if the log time interval rotation is given in the config file
+    when = m_cfg.get_value('Logging/time_rotating/when')
+    interval = m_cfg.get_value('Logging/time_rotating/interval')
+    backupCount = m_cfg.get_value('Logging/time_rotating/backupCount')
+    if when:
+        time_rotating_details['when'] = when
+    if interval:
+        time_rotating_details['interval'] = interval
+    if backupCount:
+        time_rotating_details['backupCount'] = backupCount
+
+    lg = setup_logger_common(common_logger_name, logging_level, logdir, lg_filename, time_rotating_details)
     mlog = lg['logger']
 
     mlog.info('Start monitoring websites.')

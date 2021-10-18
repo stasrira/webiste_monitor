@@ -115,3 +115,5 @@ venv.bak/
 
 configs/local_env_config.yaml
 encrypt_test.py
+
+logs/
